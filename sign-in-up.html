@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In-Up</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            color: #333; /* Cor do texto */
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 100px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            margin: 0;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .profile-picture {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin-right: 20px;
+            background-color: #ddd; /* Cor de fundo padrão */
+            background-size: cover;
+            background-position: center;
+        }
+
+        .user-details {
+            flex: 1;
+        }
+
+        .full-name {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .sub,
+        .given-name,
+        .family-name,
+        .email,
+        .verified-email {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .logout-btn {
+            display: block;
+            margin-top: 20px;
+            text-align: center;
+            background-color: #007bff; /* Cor do botão */
+            color: #fff; /* Cor do texto do botão */
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            cursor: pointer; /* Alterado o cursor para indicar que é clicável */
+        }
+
+        .logout-btn:hover {
+            background-color: #0056b3; /* Cor do botão ao passar o mouse */
+        }
+    </style>
+
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
+    
+    <script>
+       function handleCredentialResponse(response) {
+            const data = jwt_decode(response.credential);
+            console.log(data);
+
+            document.getElementById('fullName').textContent = data.name;
+            document.getElementById('sub').textContent = data.sub;
+            document.getElementById('given_name').textContent = data.given_name;
+            document.getElementById('family_name').textContent = data.family_name;
+            document.getElementById('email').textContent = data.email;
+            document.getElementById('verifiedEmail').textContent = data.email_verified;
+            document.getElementById('picture').style.backgroundImage = `url(${data.picture})`;
+            document.getElementById('logoutBtn').style.display = 'block';
+        }
+
+        function signOut() {
+            // Adicione aqui o código para fazer o logout do usuário
+            // Por exemplo, limpar os dados locais e redirecionar para a página de login
+            console.log('Logout realizado');
+            window.location.reload(); // Aqui recarregamos a página após o logout
+        }
+
+        window.onload = function () {
+            google.accounts.id.initialize({
+                client_id: "1076955723634-p3aud9m3f1ucpoctf3iaono0902b1u5g.apps.googleusercontent.com",
+                callback: handleCredentialResponse
+            });
+            google.accounts.id.renderButton(
+                document.getElementById("buttonDiv"),
+                { theme: "filled_black", size: "large", shape: "rectangular", text: "continue_with", locale: "pt-BR", logo_alignment: "left", type: "standard", width: "30px"}  // customization attributes
+            );
+            google.accounts.id.prompt(); // also display the One Tap dialog
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Bem-vindo</h1>
+        </div>
+        <div id="buttonDiv"></div>
+    
+        <div class="user-info">
+            <div id="picture" class="profile-picture"></div>
+            <div class="user-details">
+                <div id="fullName" class="full-name"></div>
+                <div id="sub" class="sub"></div>
+                <div id="given_name" class="given-name"></div>
+                <div id="family_name" class="family-name"></div>
+                <div id="email" class="email"></div>
+                <div id="verifiedEmail" class="verified-email"></div>
+            </div>
+        </div>
+
+        <!-- <div class="logout-btn" onclick="signOut()">Logout</div> -->
+    </div>
+</body>
+</html>
